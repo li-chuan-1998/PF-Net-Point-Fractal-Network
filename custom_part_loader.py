@@ -16,28 +16,31 @@ def resample_pcd(pcd, n):
     return pcd[idx[:n]]
 
 class PartDataset(data.Dataset):
-    def __init__(self, root, input_size=5000, output_size=16384, normalize=True):
-        self.input_size = input_size
+    def __init__(self, root, input_size=4096, output_size=16384, normalize=True):
         self.output_size = output_size
-        self.normalize = normalize
         self.cache = dict()
         self.complete_dir = os.path.join(root, "complete/")
         self.partial_dir = os.path.join(root, "partial/")
 
+        total_size = len(os.listdir(self.partial_dir))
         for idx, partial_pcd in enumerate(os.listdir(self.partial_dir)):
-            if idx == 1000:
+            if idx > 200:
                 break
-            partial_pcd_tensor = torch.from_numpy(resample_pcd(read_pcd(self.partial_dir+partial_pcd), self.input_size))
+            partial_pcd_np = resample_pcd(read_pcd(self.partial_dir+partial_pcd), input_size)
+            complete_pcd_name = "_".join(partial_pcd.split("_")[:3]) + "_complete.pcd"
+            complete_pcd_np = read_pcd(self.complete_dir+complete_pcd_name)
 
-            name_com = partial_pcd.split("_")
-            complete_pcd_name = "_".join(name_com[:3]) + "_complete.pcd"
-            complete_pcd_tensor = torch.from_numpy(read_pcd(self.complete_dir+complete_pcd_name))
+            if normalize:
+                partial_pcd_np = self.pc_normalize(partial_pcd_np)
+                complete_pcd_np = self.pc_normalize(complete_pcd_np)
 
-            # if self.normalize:
-            #     point_set = self.pc_normalize(point_set)
+
+            partial_pcd_tensor = torch.FloatTensor(partial_pcd_np)
+            complete_pcd_tensor = torch.FloatTensor(complete_pcd_np)
 
             self.cache[idx] = (complete_pcd_tensor, partial_pcd_tensor)
-            print(len(self.cache), end=" ")
+            if len(self.cache) % 2000 == 0:
+                print(len(self.cache), "pcds loaded | ", f"{total_size-idx} pcds left...")
 
     
     def __len__(self):

@@ -1,0 +1,124 @@
+Namespace(D_choose=1, batchSize=8, beta1=0.9, crop_point_num=4096, cuda=True, dataroot='dataset/train', each_scales_size=1, learning_rate=0.0002, manualSeed=None, nc=3, netD='', netG='', ngpu=1, niter=201, num_scales=3, pnum=4096, point_scales_list=[16384, 8192, 4096], weight_decay=0.001, workers=10, wtl2=0.95)
+Let's use 1 GPUs!
+Random Seed:  6687
+DataParallel(
+  (module): _netG(
+    (latentfeature): Latentfeature(
+      (Convlayers1): ModuleList(
+        (0): Convlayer(
+          (conv1): Conv2d(1, 64, kernel_size=(1, 3), stride=(1, 1))
+          (conv2): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+          (conv3): Conv2d(64, 128, kernel_size=(1, 1), stride=(1, 1))
+          (conv4): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1))
+          (conv5): Conv2d(256, 512, kernel_size=(1, 1), stride=(1, 1))
+          (conv6): Conv2d(512, 1024, kernel_size=(1, 1), stride=(1, 1))
+          (maxpool): MaxPool2d(kernel_size=(16384, 1), stride=1, padding=0, dilation=1, ceil_mode=False)
+          (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (bn3): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (bn4): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (bn5): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (bn6): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (Convlayers2): ModuleList(
+        (0): Convlayer(
+          (conv1): Conv2d(1, 64, kernel_size=(1, 3), stride=(1, 1))
+          (conv2): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+          (conv3): Conv2d(64, 128, kernel_size=(1, 1), stride=(1, 1))
+          (conv4): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1))
+          (conv5): Conv2d(256, 512, kernel_size=(1, 1), stride=(1, 1))
+          (conv6): Conv2d(512, 1024, kernel_size=(1, 1), stride=(1, 1))
+          (maxpool): MaxPool2d(kernel_size=(8192, 1), stride=1, padding=0, dilation=1, ceil_mode=False)
+          (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (bn3): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (bn4): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (bn5): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (bn6): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (Convlayers3): ModuleList(
+        (0): Convlayer(
+          (conv1): Conv2d(1, 64, kernel_size=(1, 3), stride=(1, 1))
+          (conv2): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+          (conv3): Conv2d(64, 128, kernel_size=(1, 1), stride=(1, 1))
+          (conv4): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1))
+          (conv5): Conv2d(256, 512, kernel_size=(1, 1), stride=(1, 1))
+          (conv6): Conv2d(512, 1024, kernel_size=(1, 1), stride=(1, 1))
+          (maxpool): MaxPool2d(kernel_size=(4096, 1), stride=1, padding=0, dilation=1, ceil_mode=False)
+          (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (bn3): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (bn4): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (bn5): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (bn6): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (conv1): Conv1d(3, 1, kernel_size=(1,), stride=(1,))
+      (bn1): BatchNorm1d(1, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    )
+    (fc1): Linear(in_features=1920, out_features=1024, bias=True)
+    (fc2): Linear(in_features=1024, out_features=512, bias=True)
+    (fc3): Linear(in_features=512, out_features=256, bias=True)
+    (fc1_1): Linear(in_features=1024, out_features=65536, bias=True)
+    (fc2_1): Linear(in_features=512, out_features=8192, bias=True)
+    (fc3_1): Linear(in_features=256, out_features=192, bias=True)
+    (conv1_1): Conv1d(512, 512, kernel_size=(1,), stride=(1,))
+    (conv1_2): Conv1d(512, 256, kernel_size=(1,), stride=(1,))
+    (conv1_3): Conv1d(256, 384, kernel_size=(1,), stride=(1,))
+    (conv2_1): Conv1d(128, 6, kernel_size=(1,), stride=(1,))
+  )
+)
+DataParallel(
+  (module): _netlocalD(
+    (conv1): Conv2d(1, 64, kernel_size=(1, 3), stride=(1, 1))
+    (conv2): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+    (conv3): Conv2d(64, 128, kernel_size=(1, 1), stride=(1, 1))
+    (conv4): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1))
+    (maxpool): MaxPool2d(kernel_size=(4096, 1), stride=1, padding=0, dilation=1, ceil_mode=False)
+    (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (bn3): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (bn4): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (fc1): Linear(in_features=448, out_features=256, bias=True)
+    (fc2): Linear(in_features=256, out_features=128, bias=True)
+    (fc3): Linear(in_features=128, out_features=16, bias=True)
+    (fc4): Linear(in_features=16, out_features=1, bias=True)
+    (bn_1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (bn_2): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (bn_3): BatchNorm1d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  )
+)
+test1
+test2
+
+Traceback (most recent call last):
+  File "Train_PFNet.py", line 184, in <module>
+    fake_center1,fake_center2,fake = point_netG(input_cropped)
+  File "/home/wrs/.local/lib/python3.7/site-packages/torch/nn/modules/module.py", line 532, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/wrs/.local/lib/python3.7/site-packages/torch/nn/parallel/data_parallel.py", line 150, in forward
+    return self.module(*inputs[0], **kwargs[0])
+  File "/home/wrs/.local/lib/python3.7/site-packages/torch/nn/modules/module.py", line 532, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/wrs/colab/PF-Net/model_PFNet.py", line 133, in forward
+    x = self.latentfeature(x)
+  File "/home/wrs/.local/lib/python3.7/site-packages/torch/nn/modules/module.py", line 532, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/wrs/colab/PF-Net/model_PFNet.py", line 59, in forward
+    outs.append(self.Convlayers1[i](x[0]))
+  File "/home/wrs/.local/lib/python3.7/site-packages/torch/nn/modules/module.py", line 532, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/wrs/colab/PF-Net/model_PFNet.py", line 36, in forward
+    x_128 = torch.squeeze(self.maxpool(x_128),2)
+  File "/home/wrs/.local/lib/python3.7/site-packages/torch/nn/modules/module.py", line 532, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/wrs/.local/lib/python3.7/site-packages/torch/nn/modules/pooling.py", line 141, in forward
+    self.return_indices)
+  File "/home/wrs/.local/lib/python3.7/site-packages/torch/_jit_internal.py", line 181, in fn
+    return if_false(*args, **kwargs)
+  File "/home/wrs/.local/lib/python3.7/site-packages/torch/nn/functional.py", line 488, in _max_pool2d
+    input, kernel_size, stride, padding, dilation, ceil_mode)
+RuntimeError: Given input size: (128x4096x1). Calculated output size: (128x-12287x1). Output size is too small
+
