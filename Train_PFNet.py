@@ -14,6 +14,7 @@ from utils import distance_squre
 import data_utils as d_utils
 import ModelNet40Loader
 import shapenet_part_loader
+import custom_part_loader
 from model_PFNet import _netlocalD,_netG
 
 
@@ -21,8 +22,8 @@ from model_PFNet import _netlocalD,_netG
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataroot',  default='dataset/train', help='path to dataset')
 parser.add_argument('--workers', type=int,default=2, help='number of data loading workers')
-parser.add_argument('--batchSize', type=int, default=24, help='input batch size')
-parser.add_argument('--pnum', type=int, default=2048, help='the point number of a sample')
+parser.add_argument('--batchSize', type=int, default=32, help='input batch size')
+parser.add_argument('--pnum', type=int, default=16384, help='the point number of a sample')
 parser.add_argument('--crop_point_num',type=int,default=512,help='0 means do not use else use with this weight')
 parser.add_argument('--nc', type=int, default=3)
 parser.add_argument('--niter', type=int, default=201, help='number of epochs to train for')
@@ -96,27 +97,16 @@ transforms = transforms.Compose(
         d_utils.PointcloudToTensor(),
     ]
 )
-dset = shapenet_part_loader.PartDataset( root='./dataset/shapenetcore_partanno_segmentation_benchmark_v0/',classification=True, class_choice=None, npoints=opt.pnum, split='train')
+dset = custom_part_loader.PartDataset(root='../pcn/dataset_v2/train/',)
 assert dset
 dataloader = torch.utils.data.DataLoader(dset, batch_size=opt.batchSize,
                                          shuffle=True,num_workers = int(opt.workers))
 
 
-test_dset = shapenet_part_loader.PartDataset( root='./dataset/shapenetcore_partanno_segmentation_benchmark_v0/',classification=True, class_choice=None, npoints=opt.pnum, split='test')
+test_dset = custom_part_loader.PartDataset( root='../pcn/dataset_v2/valid/')
 test_dataloader = torch.utils.data.DataLoader(test_dset, batch_size=opt.batchSize,
                                          shuffle=True,num_workers = int(opt.workers))
 
-#dset = ModelNet40Loader.ModelNet40Cls(opt.pnum, train=True, transforms=transforms, download = False)
-#assert dset
-#dataloader = torch.utils.data.DataLoader(dset, batch_size=opt.batchSize,
-#                                         shuffle=True,num_workers = int(opt.workers))
-#
-#
-#test_dset = ModelNet40Loader.ModelNet40Cls(opt.pnum, train=False, transforms=transforms, download = False)
-#test_dataloader = torch.utils.data.DataLoader(test_dset, batch_size=opt.batchSize,
-#                                         shuffle=True,num_workers = int(opt.workers))
-
-#pointcls_net.apply(weights_init)
 print(point_netG)
 print(point_netD)
 
@@ -155,30 +145,17 @@ if opt.D_choose == 1:
         
         for i, data in enumerate(dataloader, 0):
             
-            real_point, target = data
+            real_point, partial = data
             
     
             batch_size = real_point.size()[0]
             real_center = torch.FloatTensor(batch_size, 1, opt.crop_point_num, 3)       
             input_cropped1 = torch.FloatTensor(batch_size, opt.pnum, 3)
-            input_cropped1 = input_cropped1.data.copy_(real_point)
+            input_cropped1 = input_cropped1.data.copy_(partial)
             real_point = torch.unsqueeze(real_point, 1)
             input_cropped1 = torch.unsqueeze(input_cropped1,1)
             p_origin = [0,0,0]
-            if opt.cropmethod == 'random_center':
-                #Set viewpoints
-                choice = [torch.Tensor([1,0,0]),torch.Tensor([0,0,1]),torch.Tensor([1,0,1]),torch.Tensor([-1,0,0]),torch.Tensor([-1,1,0])]
-                for m in range(batch_size):
-                    index = random.sample(choice,1)#Random choose one of the viewpoint
-                    distance_list = []
-                    p_center = index[0]
-                    for n in range(opt.pnum):
-                        distance_list.append(distance_squre(real_point[m,0,n],p_center))
-                    distance_order = sorted(enumerate(distance_list), key  = lambda x:x[1])
-                    
-                    for sp in range(opt.crop_point_num):
-                        input_cropped1.data[m,0,distance_order[sp][0]] = torch.FloatTensor([0,0,0])
-                        real_center.data[m,0,sp] = real_point[m,0,distance_order[sp][0]]
+
             label.resize_([batch_size,1]).fill_(real_label)
             real_point = real_point.to(device)
             real_center = real_center.to(device)
