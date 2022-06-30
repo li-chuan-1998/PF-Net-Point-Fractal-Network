@@ -17,7 +17,7 @@ from model_PFNet import _netlocalD,_netG
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataroot',  default='dataset/train', help='path to dataset')
 parser.add_argument('--workers', type=int,default=10, help='number of data loading workers')
-parser.add_argument('--batchSize', type=int, default=8, help='input batch size')
+parser.add_argument('--batchSize', type=int, default=4, help='input batch size')
 parser.add_argument('--pnum', type=int, default=16384, help='the point number of a sample')
 parser.add_argument('--crop_point_num',type=int,default=4096,help='0 means do not use else use with this weight')
 parser.add_argument('--nc', type=int, default=3)
@@ -32,7 +32,7 @@ parser.add_argument('--netG', default='', help="path to netG (to continue traini
 parser.add_argument('--netD', default='', help="path to netD (to continue training)")
 parser.add_argument('--manualSeed', type=int, help='manual seed')
 parser.add_argument('--num_scales',type=int,default=3,help='number of scales')
-parser.add_argument('--point_scales_list',type=list,default=[4096,4096,4096],help='number of points in each scales')
+parser.add_argument('--point_scales_list',type=list,default=[4096,2048,1024],help='number of points in each scales')
 parser.add_argument('--each_scales_size',type=int,default=1,help='each scales size')
 parser.add_argument('--wtl2',type=float,default=0.95,help='0 means do not use else use with this weight')
 parser.add_argument('--cropmethod', default = 'random_center', help = 'random|center|random_center')
@@ -194,12 +194,9 @@ if opt.D_choose == 1:
             point_netD.zero_grad()
             real_center = torch.unsqueeze(real_center,1)   
             output = point_netD(real_center)
-            print("test1")
             errD_real = criterion(output,label)
             errD_real.backward()
-            print("test2")
             fake_center1,fake_center2,fake = point_netG(input_cropped)
-            print("test3")
             fake = torch.unsqueeze(fake,1)
             label.data.fill_(fake_label)
             output = point_netD(fake.detach())
@@ -246,7 +243,22 @@ if opt.D_choose == 1:
                     input_cropped1 = input_cropped1.data.copy_(partial)
                     real_point = torch.unsqueeze(real_point, 1)
                     input_cropped1 = torch.unsqueeze(input_cropped1,1)
+
+                    p_origin = [0,0,0]
                     
+                    if opt.cropmethod == 'random_center':
+                        choice = [torch.Tensor([1,0,0]),torch.Tensor([0,0,1]),torch.Tensor([1,0,1]),torch.Tensor([-1,0,0]),torch.Tensor([-1,1,0])]
+                        
+                        for m in range(batch_size):
+                            index = random.sample(choice,1)
+                            distance_list = []
+                            p_center = index[0]
+                            for n in range(opt.pnum):
+                                distance_list.append(distance_squre(real_point[m,0,n],p_center))
+                            distance_order = sorted(enumerate(distance_list), key  = lambda x:x[1])                         
+                            for sp in range(opt.crop_point_num):
+                                # input_cropped1.data[m,0,distance_order[sp][0]] = torch.FloatTensor([0,0,0])
+                                real_center.data[m,0,sp] = real_point[m,0,distance_order[sp][0]] 
                     real_center = real_center.to(device)
                     real_center = torch.squeeze(real_center,1)
                     input_cropped1 = input_cropped1.to(device) 
