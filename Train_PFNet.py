@@ -15,9 +15,9 @@ from model_PFNet import _netlocalD,_netG
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataroot',  default='dataset/train', help='path to dataset')
+parser.add_argument('--dataroot',  default='./dataset/', help='path to dataset')
 parser.add_argument('--workers', type=int,default=10, help='number of data loading workers')
-parser.add_argument('--batchSize', type=int, default=4, help='input batch size')
+parser.add_argument('--batchSize', type=int, default=32, help='input batch size')
 parser.add_argument('--pnum', type=int, default=16384, help='the point number of a sample')
 parser.add_argument('--crop_point_num',type=int,default=4096,help='0 means do not use else use with this weight')
 parser.add_argument('--nc', type=int, default=3)
@@ -85,12 +85,12 @@ torch.manual_seed(opt.manualSeed)
 if opt.cuda:
     torch.cuda.manual_seed_all(opt.manualSeed)
 
-dset = custom_part_loader.PartDataset(root='../../pcn/dataset_v2/train/',)
+dset = custom_part_loader.PartDataset(root=opt.dataroot+"train/")
 assert dset
 dataloader = torch.utils.data.DataLoader(dset, batch_size=opt.batchSize,shuffle=True,num_workers = int(opt.workers))
 
 
-test_dset = custom_part_loader.PartDataset(root='../../pcn/dataset_v2/valid/')
+test_dset = custom_part_loader.PartDataset(root=opt.dataroot+"valid/")
 test_dataloader = torch.utils.data.DataLoader(test_dset, batch_size=opt.batchSize,shuffle=True,num_workers = int(opt.workers))
 
 print(point_netG)
