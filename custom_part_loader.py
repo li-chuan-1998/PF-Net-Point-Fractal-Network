@@ -15,6 +15,12 @@ def resample_pcd(pcd, n):
         idx = np.concatenate([idx, np.random.randint(pcd.shape[0], size=n-pcd.shape[0])])
     return pcd[idx[:n]]
 
+def rand_remove_points(pcd, prob=0.5):
+    missing_pcd = np.copy(pcd)
+    idx_list = np.random.permutation(len(pcd))[:int(len(pcd)*prob)].tolist()
+    missing_pcd = np.delete(missing_pcd, idx_list,axis=0)
+    return missing_pcd
+
 class PartDataset(data.Dataset):
     def __init__(self, root, input_size=4096, output_size=16384, normalize=True):
         self.output_size = output_size
@@ -32,7 +38,7 @@ class PartDataset(data.Dataset):
                 # partial_pcd_np = self.pc_normalize(partial_pcd_np)
                 complete_pcd_np = self.pc_normalize(complete_pcd_np)
 
-
+            complete_pcd_np = rand_remove_points(complete_pcd_np)
             # partial_pcd_tensor = torch.FloatTensor(partial_pcd_np)
             complete_pcd_tensor = torch.FloatTensor(complete_pcd_np)
 
