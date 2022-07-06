@@ -15,7 +15,7 @@ from model_PFNet import _netlocalD,_netG
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataroot',  default='content/drive/Normal Dataset/', help='path to dataset')
+parser.add_argument('--dataroot',  default='/content/drive/MyDrive/Normal Dataset/', help='path to dataset')
 parser.add_argument('--workers', type=int,default=2, help='number of data loading workers')
 parser.add_argument('--batchSize', type=int, default=32, help='input batch size')
 parser.add_argument('--pnum', type=int, default=16384, help='the point number of a sample')
