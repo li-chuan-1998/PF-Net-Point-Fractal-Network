@@ -16,7 +16,7 @@ from model_PFNet import _netlocalD,_netG
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataroot',  default='./dataset/', help='path to dataset')
-parser.add_argument('--workers', type=int,default=10, help='number of data loading workers')
+parser.add_argument('--workers', type=int,default=2, help='number of data loading workers')
 parser.add_argument('--batchSize', type=int, default=32, help='input batch size')
 parser.add_argument('--pnum', type=int, default=16384, help='the point number of a sample')
 parser.add_argument('--crop_point_num',type=int,default=4096,help='0 means do not use else use with this weight')
@@ -136,7 +136,7 @@ if opt.D_choose == 1:
             batch_size = real_point.size()[0]
             real_center = torch.FloatTensor(batch_size, 1, opt.crop_point_num, 3)       
             input_cropped1 = torch.FloatTensor(batch_size, 4096, 3)
-            input_cropped1 = input_cropped1.data.copy_(partial)
+            input_cropped1 = input_cropped1.data.copy_(real_point)
             real_point = torch.unsqueeze(real_point, 1)
             input_cropped1 = torch.unsqueeze(input_cropped1,1)
             p_origin = [0,0,0]
@@ -152,10 +152,9 @@ if opt.D_choose == 1:
                     distance_order = sorted(enumerate(distance_list), key  = lambda x:x[1])
                     
                     for sp in range(opt.crop_point_num):
-                        # input_cropped1.data[m,0,distance_order[sp][0]] = torch.FloatTensor([0,0,0])
+                        input_cropped1.data[m,0,distance_order[sp][0]] = torch.FloatTensor([0,0,0])
                         real_center.data[m,0,sp] = real_point[m,0,distance_order[sp][0]]
     
-
 
             label.resize_([batch_size,1]).fill_(real_label)
             real_point = real_point.to(device)
@@ -240,7 +239,7 @@ if opt.D_choose == 1:
                     batch_size = real_point.size()[0]
                     real_center = torch.FloatTensor(batch_size, 1, opt.crop_point_num, 3)
                     input_cropped1 = torch.FloatTensor(batch_size, opt.pnum, 3)
-                    input_cropped1 = input_cropped1.data.copy_(partial)
+                    input_cropped1 = input_cropped1.data.copy_(real_point)
                     real_point = torch.unsqueeze(real_point, 1)
                     input_cropped1 = torch.unsqueeze(input_cropped1,1)
 
@@ -257,7 +256,7 @@ if opt.D_choose == 1:
                                 distance_list.append(distance_squre(real_point[m,0,n],p_center))
                             distance_order = sorted(enumerate(distance_list), key  = lambda x:x[1])                         
                             for sp in range(opt.crop_point_num):
-                                # input_cropped1.data[m,0,distance_order[sp][0]] = torch.FloatTensor([0,0,0])
+                                input_cropped1.data[m,0,distance_order[sp][0]] = torch.FloatTensor([0,0,0])
                                 real_center.data[m,0,sp] = real_point[m,0,distance_order[sp][0]] 
                     real_center = real_center.to(device)
                     real_center = torch.squeeze(real_center,1)

@@ -22,22 +22,23 @@ class PartDataset(data.Dataset):
         self.complete_dir = os.path.join(root, "complete/")
         self.partial_dir = os.path.join(root, "partial/")
 
-        total_size = len(os.listdir(self.partial_dir))
-        for idx, partial_pcd in enumerate(os.listdir(self.partial_dir)):
-            partial_pcd_np = resample_pcd(read_pcd(self.partial_dir+partial_pcd), input_size)
-            complete_pcd_name = "_".join(partial_pcd.split("_")[:3]) + "_complete.pcd"
-            complete_pcd_np = read_pcd(self.complete_dir+complete_pcd_name)
+        total_size = len(os.listdir(self.complete_dir))
+        for idx, complete_pcd in enumerate(os.listdir(self.partial_dir)):
+            # partial_pcd_np = resample_pcd(read_pcd(self.partial_dir+partial_pcd), input_size)
+            # complete_pcd_name = "_".join(partial_pcd.split("_")[:3]) + "_complete.pcd"
+            complete_pcd_np = read_pcd(self.complete_dir+complete_pcd)
 
             if normalize:
-                partial_pcd_np = self.pc_normalize(partial_pcd_np)
+                # partial_pcd_np = self.pc_normalize(partial_pcd_np)
                 complete_pcd_np = self.pc_normalize(complete_pcd_np)
 
 
-            partial_pcd_tensor = torch.FloatTensor(partial_pcd_np)
+            # partial_pcd_tensor = torch.FloatTensor(partial_pcd_np)
             complete_pcd_tensor = torch.FloatTensor(complete_pcd_np)
 
-            self.cache[idx] = (complete_pcd_tensor, partial_pcd_tensor)
-            if len(self.cache) % 2000 == 0:
+            self.cache[idx] = complete_pcd_tensor
+            # self.cache[idx] = (complete_pcd_tensor, partial_pcd_tensor)
+            if len(self.cache) % 3000 == 0:
                 print(len(self.cache), "pcds loaded | ", f"{total_size-idx} pcds left...")
 
     
@@ -45,8 +46,8 @@ class PartDataset(data.Dataset):
         return len(self.cache)
 
     def __getitem__(self, idx):
-        couple = self.cache[idx]
-        return couple[0], couple[1]
+        # couple = self.cache[idx]
+        return self.cache[idx], None
 
     def pc_normalize(self, pc):
         """ pc: NxC, return NxC """
