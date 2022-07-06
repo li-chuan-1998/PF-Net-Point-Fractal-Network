@@ -36,10 +36,11 @@ class PartDataset(data.Dataset):
             # partial_pcd_tensor = torch.FloatTensor(partial_pcd_np)
             complete_pcd_tensor = torch.FloatTensor(complete_pcd_np)
 
-            self.cache[idx] = complete_pcd_tensor
+            self.cache[idx] = (complete_pcd_tensor, "empty")
             # self.cache[idx] = (complete_pcd_tensor, partial_pcd_tensor)
             if len(self.cache) % 3000 == 0:
                 print(len(self.cache), "pcds loaded | ", f"{total_size-idx} pcds left...")
+        print("dataset from \"", root, "\"have been loaded")
 
     
     def __len__(self):
@@ -47,7 +48,7 @@ class PartDataset(data.Dataset):
 
     def __getitem__(self, idx):
         # couple = self.cache[idx]
-        return self.cache[idx], None
+        return self.cache[idx][0], self.cache[idx][1]
 
     def pc_normalize(self, pc):
         """ pc: NxC, return NxC """

@@ -135,7 +135,7 @@ if opt.D_choose == 1:
 
             batch_size = real_point.size()[0]
             real_center = torch.FloatTensor(batch_size, 1, opt.crop_point_num, 3)       
-            input_cropped1 = torch.FloatTensor(batch_size, 4096, 3)
+            input_cropped1 = torch.FloatTensor(batch_size, opt.pnum, 3)
             input_cropped1 = input_cropped1.data.copy_(real_point)
             real_point = torch.unsqueeze(real_point, 1)
             input_cropped1 = torch.unsqueeze(input_cropped1,1)
