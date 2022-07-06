@@ -13,7 +13,6 @@ from utils import PointLoss
 from model_PFNet import _netlocalD,_netG
 
 
-
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataroot',  default='PF-Net-Point-Fractal-Network/dataset/', help='path to dataset')
 parser.add_argument('--workers', type=int,default=2, help='number of data loading workers')
@@ -32,7 +31,7 @@ parser.add_argument('--netG', default='', help="path to netG (to continue traini
 parser.add_argument('--netD', default='', help="path to netD (to continue training)")
 parser.add_argument('--manualSeed', type=int, help='manual seed')
 parser.add_argument('--num_scales',type=int,default=3,help='number of scales')
-parser.add_argument('--point_scales_list',type=list,default=[4096,2048,1024],help='number of points in each scales')
+parser.add_argument('--point_scales_list',type=list,default=[16384,6144,4096],help='number of points in each scales')
 parser.add_argument('--each_scales_size',type=int,default=1,help='each scales size')
 parser.add_argument('--wtl2',type=float,default=0.95,help='0 means do not use else use with this weight')
 parser.add_argument('--cropmethod', default = 'random_center', help = 'random|center|random_center')
