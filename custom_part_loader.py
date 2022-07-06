@@ -22,7 +22,7 @@ class PartDataset(data.Dataset):
         self.complete_dir = os.path.join(root, "complete/")
         self.partial_dir = os.path.join(root, "partial/")
 
-        total_size = len(os.listdir(self.complete_dir))
+        total_size = len(os.listdir(root))
         for idx, complete_pcd in enumerate(os.listdir(root)):
             # partial_pcd_np = resample_pcd(read_pcd(self.partial_dir+partial_pcd), input_size)
             # complete_pcd_name = "_".join(partial_pcd.split("_")[:3]) + "_complete.pcd"
