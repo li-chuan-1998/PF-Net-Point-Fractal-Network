@@ -15,7 +15,7 @@ from model_PFNet import _netlocalD,_netG
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataroot',  default='/content/drive/MyDrive/Normal Dataset/', help='path to dataset')
+parser.add_argument('--dataroot',  default='PF-Net-Point-Fractal-Network/dataset/', help='path to dataset')
 parser.add_argument('--workers', type=int,default=2, help='number of data loading workers')
 parser.add_argument('--batchSize', type=int, default=32, help='input batch size')
 parser.add_argument('--pnum', type=int, default=16384, help='the point number of a sample')
@@ -85,12 +85,12 @@ torch.manual_seed(opt.manualSeed)
 if opt.cuda:
     torch.cuda.manual_seed_all(opt.manualSeed)
 
-dset = custom_part_loader.PartDataset(root=opt.dataroot+"train/")
+dset = custom_part_loader.PartDataset(root=opt.dataroot+"train-complete/")
 assert dset
 dataloader = torch.utils.data.DataLoader(dset, batch_size=opt.batchSize,shuffle=True,num_workers = int(opt.workers))
 
 
-test_dset = custom_part_loader.PartDataset(root=opt.dataroot+"valid/")
+test_dset = custom_part_loader.PartDataset(root=opt.dataroot+"valid-complete/")
 test_dataloader = torch.utils.data.DataLoader(test_dset, batch_size=opt.batchSize,shuffle=True,num_workers = int(opt.workers))
 
 print(point_netG)
