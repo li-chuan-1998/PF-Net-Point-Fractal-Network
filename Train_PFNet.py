@@ -280,13 +280,13 @@ if opt.D_choose == 1:
             f.close()
         schedulerD.step()
         schedulerG.step()
-        if epoch% 10 == 0:   
+        if epoch% 3 == 0:   
             torch.save({'epoch':epoch+1,
                         'state_dict':point_netG.state_dict()},
-                        'Trained_Model/point_netG'+str(epoch)+'.pth' )
+                        'drive/MyDrive/Trained_Model/point_netG'+str(epoch)+'.pth' )
             torch.save({'epoch':epoch+1,
                         'state_dict':point_netD.state_dict()},
-                        'Trained_Model/point_netD'+str(epoch)+'.pth' )  
+                        'drive/MyDrive/Trained_Model/point_netD'+str(epoch)+'.pth' )  
 
 # #
 # #############################
